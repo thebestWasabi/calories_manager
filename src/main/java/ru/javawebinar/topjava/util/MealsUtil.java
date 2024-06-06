@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +29,26 @@ public class MealsUtil {
 
         List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
+    }
+
+    public static List<MealTo>  filteredByCycles(
+            final List<Meal> meals,
+            final LocalTime startTime, final LocalTime endTime,
+            final int caloriesPerDay
+    ) {
+        final Map<LocalDate, Integer> caloriesForDay = new HashMap<>();
+        for (Meal meal : meals) {
+            caloriesForDay.put(meal.getDate(), caloriesForDay.getOrDefault(meal.getDate(), 0) + meal.getCalories());
+        }
+
+        final List<MealTo> result = new ArrayList<>();
+        for (Meal meal : meals) {
+            if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
+                result.add(createMeal(meal, caloriesForDay.get(meal.getDate()) > caloriesPerDay));
+            }
+        }
+
+        return result;
     }
 
     public static List<MealTo> filteredByStreams(
