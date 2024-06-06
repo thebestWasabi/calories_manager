@@ -27,27 +27,24 @@ public class MealsUtil {
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        List<MealTo> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
     }
 
-    public static List<MealTo>  filteredByCycles(
+    public static List<MealTo> filteredByCycles(
             final List<Meal> meals,
             final LocalTime startTime, final LocalTime endTime,
             final int caloriesPerDay
     ) {
         final Map<LocalDate, Integer> caloriesForDay = new HashMap<>();
-        for (Meal meal : meals) {
-            caloriesForDay.put(meal.getDate(), caloriesForDay.getOrDefault(meal.getDate(), 0) + meal.getCalories());
-        }
+        meals.forEach(meal -> caloriesForDay.merge(meal.getDate(), meal.getCalories(), (c1, c2) -> c1 + c2));
 
         final List<MealTo> result = new ArrayList<>();
-        for (Meal meal : meals) {
+        meals.forEach(meal -> {
             if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
                 result.add(createMeal(meal, caloriesForDay.get(meal.getDate()) > caloriesPerDay));
             }
-        }
-
+        });
         return result;
     }
 
