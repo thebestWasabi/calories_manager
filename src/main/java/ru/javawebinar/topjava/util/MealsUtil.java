@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.util;
 
-import ru.javawebinar.topjava.constant.MealsConst;
+import ru.javawebinar.topjava.db.MealsConst;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.constant.MealsConst.*;
+import static ru.javawebinar.topjava.db.MealsConst.*;
 
 public class MealsUtil {
 
@@ -27,9 +27,7 @@ public class MealsUtil {
             final int caloriesPerDay
     ) {
         final Map<LocalDate, Integer> caloriesForDay = meals.stream()
-                .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
-//                        Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum)
-                );
+                .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
 
         return meals.stream()
                 .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime))

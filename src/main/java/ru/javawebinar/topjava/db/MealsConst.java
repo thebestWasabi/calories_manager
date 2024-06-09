@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.constant;
+package ru.javawebinar.topjava.db;
 
 import ru.javawebinar.topjava.model.Meal;
 
