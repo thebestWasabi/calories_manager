@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.db.ICrud;
 import ru.javawebinar.topjava.db.InMemoryDb;
+import ru.javawebinar.topjava.db.MealsConst;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -25,12 +26,13 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final List<Meal> meals = db.getAll();
+//        final List<Meal> meals2 = MealsConst.meals;
         final List<MealTo> mealsDto = MealsUtil.toDto(meals);
 
         log.debug("redirect to meals");
 
         req.setAttribute("meals", mealsDto);
-        req.getRequestDispatcher("/meals.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/meals.jsp").forward(req, resp);
     }
 
     @Override
