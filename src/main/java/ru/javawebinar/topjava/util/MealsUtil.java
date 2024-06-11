@@ -10,18 +10,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.db.MealsConst.*;
 
 public class MealsUtil {
+
+    private static final int CALORIES_PER_DAY = 2000;
 
     public static void main(String[] args) {
         final List<Meal> meals = MealsConst.meals;
 
-        final List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), CALORIES_PER_DAY);
+        final List<MealTo> mealsTo = withTimeFilter(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), CALORIES_PER_DAY);
         mealsTo.forEach(System.out::println);
     }
 
-    public static List<MealTo> filteredByStreams(
+    public static List<MealTo> withTimeFilter(
             final List<Meal> meals,
             final LocalTime startTime, final LocalTime endTime,
             final int caloriesPerDay
@@ -35,16 +36,16 @@ public class MealsUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<MealTo> toDto(final List<Meal> meals) {
+    public static List<MealTo> withoutFilter(final List<Meal> meals, final int caloriesPerDay) {
         final Map<LocalDate, Integer> caloriesForDay = meals.stream()
                 .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
 
         return meals.stream()
-                .map(meal -> createMeal(meal, caloriesForDay.get(meal.getDate()) > CALORIES_PER_DAY))
+                .map(meal -> createMeal(meal, caloriesForDay.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 
     private static MealTo createMeal(final Meal meal, final boolean excess) {
-        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }
