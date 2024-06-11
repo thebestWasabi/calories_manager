@@ -7,7 +7,7 @@
 
     <body>
         <div class="header">
-            <h3><a href="${pageContext.request.contextPath}/index.html" class="home-link">Home</a></h3>
+            <h3><a href="${pageContext.request.contextPath}/index.jsp" class="home-link">Home</a></h3>
         </div>
     </body>
 </html>

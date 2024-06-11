@@ -1,13 +1,13 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.db.ICrud;
-import ru.javawebinar.topjava.db.InMemoryDb;
-import ru.javawebinar.topjava.db.MealsConst;
+import ru.javawebinar.topjava.db.CrudMeal;
+import ru.javawebinar.topjava.db.InMemoryDbMeal;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +21,52 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
 
     private static final Logger log = getLogger(MealServlet.class);
-    private final ICrud db = new InMemoryDb();
+    private static final String MEALS = "/jsp/meals.jsp";
+    private static final String INSERT_OR_EDIT = "/jsp/addMeal.jsp";
+
+    private final CrudMeal db;
+
+    public MealServlet() {
+        super();
+        db = new InMemoryDbMeal();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final List<Meal> meals = db.getAll();
-//        final List<Meal> meals2 = MealsConst.meals;
-        final List<MealTo> mealsDto = MealsUtil.toDto(meals);
+        String forward = "";
+        String action = req.getParameter("action");
 
-        log.debug("redirect to meals");
+        log.debug("Action: {}", action);
 
-        req.setAttribute("meals", mealsDto);
-        req.getRequestDispatcher("/WEB-INF/jsp/meals.jsp").forward(req, resp);
+        if (action == null) action = "meals";
+
+        if (action.equalsIgnoreCase("delete")) {
+            forward = MEALS;
+            final int id = Integer.parseInt(req.getParameter("id"));
+            db.delete(id);
+            req.setAttribute("meals", db.getAll());
+        }
+        else if (action.equalsIgnoreCase("edit")) {
+            forward = INSERT_OR_EDIT;
+            final String idStr = req.getParameter("id");
+            if (idStr != null) {
+                final int id = Integer.parseInt(idStr);
+                final Meal meal = db.get(id);
+                req.setAttribute("meal", meal);
+            }
+        }
+        else if (action.equalsIgnoreCase("meals")) {
+            forward = MEALS;
+            final List<Meal> meals = db.getAll();
+            final List<MealTo> mealTos = MealsUtil.withoutFilter(meals, 2000);
+            req.setAttribute("meals", mealTos);
+        }
+        else {
+            forward = INSERT_OR_EDIT;
+        }
+
+        final RequestDispatcher view = req.getRequestDispatcher(forward);
+        view.forward(req, resp);
     }
 
     @Override
@@ -43,8 +77,15 @@ public class MealServlet extends HttpServlet {
         final int calories = Integer.parseInt(req.getParameter("calories"));
 
         final Meal meal = new Meal(date, description, calories);
-        db.add(meal);
 
+        final String id = req.getParameter("id");
+        if (id == null || id.isEmpty()) {
+            db.add(meal);
+        }
+        else {
+            meal.setId(Integer.parseInt(id));
+            db.update(meal);
+        }
         resp.sendRedirect(req.getContextPath() + "/meals");
     }
 }
