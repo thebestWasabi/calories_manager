@@ -5,10 +5,7 @@
 <html>
     <head>
         <title>Title</title>
-        <style>
-            .excess-false {background-color: #e8f5e9}
-            .excess-true {background-color: #ffebee;}
-        </style>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
     </head>
     <body>
         <h3><a href="index.html">Home</a></h3>
