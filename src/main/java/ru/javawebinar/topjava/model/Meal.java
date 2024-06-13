@@ -11,10 +11,23 @@ public class Meal {
     private final String description;
     private final int calories;
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
+    public Meal(final Integer id, final LocalDateTime dateTime,
+                final String description, final int calories) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+    }
+
+    public Meal(final LocalDateTime dateTime,
+                final String description, final int calories) {
+        this(null, dateTime, description, calories);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Meal {id=%d, dateTime=%s, description='%s', calories=%d}",
+                id, dateTime, description, calories);
     }
 
     public boolean isNew() {
