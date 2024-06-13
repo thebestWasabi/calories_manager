@@ -27,6 +27,6 @@ public class MealServlet extends HttpServlet {
         final List<MealTo> withExcess = MealsUtil.getWithExcess(mealsStartValue, 2000);
 
         request.setAttribute("mealsList", withExcess);
-        request.getRequestDispatcher("/mealList.jsp").forward(request, response);
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 }
