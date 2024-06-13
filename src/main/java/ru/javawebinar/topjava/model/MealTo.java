@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class MealTo {
 
-    private Integer id;
+    private final Integer id;
     private final LocalDateTime dateTime;
     private final String description;
     private final int calories;
@@ -26,10 +26,6 @@ public class MealTo {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(final Integer id) {
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {

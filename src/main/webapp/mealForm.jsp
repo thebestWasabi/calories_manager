@@ -6,14 +6,14 @@
     </head>
     <body>
         <div class="form-container">
-            <form method="post" action="${pageContext.request.contextPath}/meals">
+            <form method="post" action="${pageContext.request.contextPath}/meals?action=add">
                 <label for="dateTime">Date and Time:</label>
                 <input type="datetime-local" id="dateTime" name="dateTime" required><br>
                 <label for="description">Description:</label>
                 <input type="text" id="description" name="description" required><br>
                 <label for="calories">Calories:</label>
                 <input type="number" id="calories" name="calories" required><br>
-                <button type="submit" class="button">add</button>
+                <button type="submit" class="button">Add</button>
             </form>
         </div>
     </body>

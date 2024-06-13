@@ -18,7 +18,7 @@ public class MealsUtil {
     public static void main(String[] args) {
         final List<Meal> meals = MealsConst.meals;
 
-        final List<MealTo> mealsTo = withTimeFilter(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), CALORIES_PER_DAY);
+        final List<MealTo> mealsTo = withTimeFilter(meals, LocalTime.of(7, 0), LocalTime.of(18, 0), CALORIES_PER_DAY);
         mealsTo.forEach(System.out::println);
     }
 

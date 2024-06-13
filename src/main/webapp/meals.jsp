@@ -9,10 +9,10 @@
     </head>
     <body>
         <div class="header">
-            <h3><a href="${pageContext.request.contextPath}/index.jsp" class="home-link">Home</a></h3>
+            <h3><a href="${pageContext.request.contextPath}/index.html" class="home-link">Home</a></h3>
         </div>
 
-        <h3><a href="${pageContext.request.contextPath}/meals?action=edit" class="add-meal-link button">+</a></h3>
+        <h3><a href="${pageContext.request.contextPath}/meals?action=new" class="add-meal-link button">+</a></h3>
 
         <div class="table-container">
             <table>
@@ -28,7 +28,7 @@
                 <tbody>
                     <c:forEach var="meal" items="${requestScope.meals}">
                         <tr class="excess-${meal.excess}">
-                            <td>${f:formatLocalDateTime(meal.dateTime, 'dd-MM-yyyy HH:mm')}</td>
+                            <td>${f:formatLocalDateTime(meal.dateTime, 'yyyy-MM-dd HH:mm')}</td>
                             <td>${meal.description}</td>
                             <td>${meal.calories}</td>
                             <td><a href="${pageContext.request.contextPath}/meals?action=edit&id=${meal.id}">Update</a></td>
