@@ -21,4 +21,20 @@ public class MealTo {
         return String.format("MealTo {dateTime=%s, description='%s', calories=%d, excess=%s}",
                 dateTime, description, calories, excess);
     }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCalories() {
+        return calories;
+    }
+
+    public boolean isExcess() {
+        return excess;
+    }
 }
