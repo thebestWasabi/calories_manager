@@ -13,52 +13,52 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    private static final int CALORIES_PER_DAY = 2000;
     private static final String MEALS_JSP = "/meals.jsp";
+    private static final String MEAL_FORM = "/mealForm.jsp";
 
     private MealRepository mealRepository;
 
     @Override
     public void init() throws ServletException {
-        super.init();
         mealRepository = new InMemoryMealRepository();
     }
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final String action = request.getParameter("action");
 
-        if (action == null) {
-            log.info("getAll");
-            request.setAttribute("mealsList", MealsUtil.getWithExcess(mealRepository.getAll(), CALORIES_PER_DAY));
-            request.getRequestDispatcher(MEALS_JSP).forward(request, response);
-        }
-        else if (action.equals("delete")) {
-            final int id = getId(request);
-            log.info("delete: {}", id);
-            mealRepository.delete(id);
-            response.sendRedirect("meals");
-        }
-        else {
-            final Meal meal = action.equals("create")
-                    ? new Meal(LocalDateTime.now(), "", 1000)
-                    : mealRepository.get(getId(request));
-            request.setAttribute("meal", meal);
-            request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+        switch (action == null ? "all" : action) {
+            case "delete":
+                final int id = getId(request);
+                log.info("Delete: {}", id);
+                mealRepository.delete(id);
+                response.sendRedirect("meals");
+                break;
+            case "create":
+            case "update":
+                final Meal meal = action.equals("create")
+                        ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000)
+                        : mealRepository.get(getId(request));
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher(MEAL_FORM).forward(request, response);
+                break;
+            case "all":
+            default:
+                log.info("getAll");
+                request.setAttribute("mealsList", MealsUtil.getTos(mealRepository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                request.getRequestDispatcher(MEALS_JSP).forward(request, response);
+                break;
         }
     }
 
-
     @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-
         request.setCharacterEncoding("UTF-8");
 
         final String idStr = request.getParameter("id");
