@@ -9,13 +9,13 @@ public final class DateTimeUtil {
     private DateTimeUtil() {
     }
 
-    private static final String PATTERN_DATE_TIME_STRING = "yyyy-MM-dd HH:mm";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static boolean isBetweenHalfOpen(LocalTime lt, LocalTime startTime, LocalTime endTime) {
         return !lt.isBefore(startTime) && lt.isBefore(endTime);
     }
 
     public static String formatLocalDateTime(LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ofPattern(PATTERN_DATE_TIME_STRING));
+        return localDateTime == null ? "" : localDateTime.format(DATE_TIME_FORMATTER);
     }
 }
