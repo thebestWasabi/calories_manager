@@ -2,7 +2,11 @@ package ru.javawebinar.topjava.model;
 
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.Set;
 
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
@@ -15,17 +19,24 @@ public class User extends AbstractNamedEntity {
     private Set<Role> roles;
     private int caloriesPerDay;
 
-    public User(Integer id, String name, String email, String password, Role... roles) {
-        this(id, name, email, password, DEFAULT_CALORIES_PER_DAY, true, Arrays.asList(roles));
-    }
-
-    public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Collection<Role> roles) {
+    public User(final Integer id, final String name, final String email, final String password,
+                final int caloriesPerDay, final boolean enabled, final Collection<Role> roles) {
         super(id, name);
         this.email = email;
         this.password = password;
         this.caloriesPerDay = caloriesPerDay;
         this.enabled = enabled;
         setRoles(roles);
+    }
+
+    public User(final Integer id, final String name, final String email,
+                final String password, final Role... roles) {
+        this(id, name, email, password, DEFAULT_CALORIES_PER_DAY, true, Arrays.asList(roles));
+    }
+
+    public User(final String name, final String email, final String password,
+                final boolean enabled, final Role... roles) {
+        this(null, name, email, password, DEFAULT_CALORIES_PER_DAY, true, Arrays.asList(roles));
     }
 
     public String getEmail() {
