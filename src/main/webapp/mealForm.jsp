@@ -7,7 +7,7 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
+        <title>Meal Form</title>
     </head>
 
     <body>
@@ -19,18 +19,18 @@
 
         <div class="form-container">
             <form method="post" action="meals">
-                <input type="hidden" name="id" value="${meal.id}">
+                <input type="hidden" name="id" value="${meal.id}"/>
                 <dl>
                     <label for="dateTime">Date and Time:</label>
-                    <input type="datetime-local" value="${meal.dateTime}" id="dateTime" name="dateTime" />
+                    <input type="datetime-local" value="${meal.dateTime}" id="dateTime" name="dateTime"/>
                 </dl>
                 <dl>
                     <label for="description">Description:</label>
-                    <input type="text" value="${meal.description}" id="description" name="description" />
+                    <input type="text" value="${meal.description}" id="description" name="description"/>
                 </dl>
                 <dl>
                     <label for="calories">Calories:</label>
-                    <input type="number" value="${meal.calories}" id="calories" name="calories" />
+                    <input type="number" value="${meal.calories}" id="calories" name="calories"/>
                 </dl>
 
                 <button type="submit" class="button">add</button>
