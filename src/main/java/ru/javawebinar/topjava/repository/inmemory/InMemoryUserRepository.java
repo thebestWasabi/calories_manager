@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.UserUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,10 @@ public class InMemoryUserRepository implements UserRepository {
     private final Map<Integer, User> repository = new ConcurrentHashMap<>();
     private final AtomicInteger idCounter = new AtomicInteger(0);
 
+    {
+        UserUtil.users.forEach(this::save);
+    }
+
     @Override
     public User save(final User user) {
         log.info("save {}", user);
@@ -30,7 +35,7 @@ public class InMemoryUserRepository implements UserRepository {
             return user;
         }
 
-        return repository.putIfAbsent(user.getId(), user);
+        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
