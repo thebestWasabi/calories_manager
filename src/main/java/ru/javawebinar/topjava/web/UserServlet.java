@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
+import ru.javawebinar.topjava.util.UsersUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -55,7 +56,8 @@ public class UserServlet extends HttpServlet {
             default:
                 log.debug("redirect to users");
                 final List<User> all = userRepository.getAll();
-                request.setAttribute("users", all);
+                final List<User> users = UsersUtil.sortByName(all);
+                request.setAttribute("users", users);
                 request.getRequestDispatcher(USERS_JSP).forward(request, response);
                 break;
         }
