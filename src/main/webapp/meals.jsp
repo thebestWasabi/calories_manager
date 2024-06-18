@@ -17,7 +17,7 @@
         <h3><a href="index.html" type="button">Home</a></h3>
         <hr>
         <h2>Meals</h2>
-        <a href="meals?action=create">add</a>
+        <a href="meals?action=create&userId=${param.userId}">add</a>
 
         <div class="table-container">
             <table>
@@ -38,8 +38,8 @@
                             <td>${f:formatLocalDateTime(meal.dateTime)}</td>
                             <td>${meal.description}</td>
                             <td>${meal.calories}</td>
-                            <td><a href="meals?action=update&id=${meal.id}">update</a></td>
-                            <td><a href="meals?action=delete&id=${meal.id}">delete</a></td>
+                            <td><a href="meals?action=update&id=${meal.id}&userId=${param.userId}">update</a></td>
+                            <td><a href="meals?action=delete&id=${meal.id}&userId=${param.userId}">delete</a></td>
                         </tr>
                     </c:forEach>
                 </tbody>

@@ -45,11 +45,14 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = action.equals("create")
-                        ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000)
+                        ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, getUserId(request))
                         : mealRepository.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher(MEAL_FORM).forward(request, response);
                 break;
+            case "user":
+                request.setAttribute("mealsList", getTos(mealRepository.getAllByUserId(getUserId(request)), DEFAULT_CALORIES_PER_DAY));
+                request.getRequestDispatcher(MEALS_JSP).forward(request, response);
             case "all":
             default:
                 log.info("getAll");
@@ -68,8 +71,9 @@ public class MealServlet extends HttpServlet {
         final LocalDateTime date = LocalDateTime.parse(request.getParameter("dateTime"));
         final String description = request.getParameter("description");
         final int calories = Integer.parseInt(request.getParameter("calories"));
+        final int userId = getUserId(request);
 
-        final Meal meal = new Meal(id, date, description, calories);
+        final Meal meal = new Meal(id, date, description, calories, userId);
 
         log.info(meal.isNew() ? "Create new meal {}" : "Update meal {}", meal);
 
@@ -80,5 +84,11 @@ public class MealServlet extends HttpServlet {
     private int getId(final HttpServletRequest request) {
         final String idStr = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(idStr);
+    }
+
+    private int getUserId(final HttpServletRequest request) {
+        // Метод для получения userId из параметров запроса или сессии
+        final String userIdStr = Objects.requireNonNull(request.getParameter("userId"));
+        return Integer.parseInt(userIdStr);
     }
 }

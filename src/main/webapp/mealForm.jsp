@@ -32,6 +32,7 @@
                     <label for="calories">Calories:</label>
                     <input type="number" value="${meal.calories}" id="calories" name="calories"/>
                 </dl>
+                <input type="hidden" name="userId" value="${meal.userId}">
 
                 <button type="submit" class="button">add</button>
                 <button onclick="window.history.back()">cancel</button>

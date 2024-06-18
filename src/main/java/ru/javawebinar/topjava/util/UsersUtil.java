@@ -4,9 +4,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UsersUtil {
 
@@ -16,9 +14,9 @@ public class UsersUtil {
             new User("Дарья", "daria@mail.ru", "321", true, Role.USER)
     );
 
-    public static List<User> sortByName(List<User> users) {
-        return users.stream()
-                .sorted(Comparator.comparing(User::getName))
-                .collect(Collectors.toList());
-    }
+//    public static List<User> sortByName(List<User> users) {
+//        return users.stream()
+//                .sorted(Comparator.comparing(User::getName))
+//                .collect(Collectors.toList());
+//    }
 }

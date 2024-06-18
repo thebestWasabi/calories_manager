@@ -36,10 +36,10 @@
                         <jsp:useBean id="user" type="ru.javawebinar.topjava.model.User"/>
 
                         <tr>
-                            <td>${user.name}</td>
+                            <td><a href="meals?action=user&userId=${user.id}">${user.name}</a></td>
                             <td>${user.email}</td>
                             <td>${user.roles}</td>
-                            <td><a href="users?action=update&id=${user.id}">update</a></td>
+                            <td><a href="meals?action=update&id=${user.id}">update</a></td>
                             <td><a href="users?action=delete&id=${user.id}">delete</a></td>
                         </tr>
                     </c:forEach>

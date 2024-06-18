@@ -1,11 +1,11 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
-import ru.javawebinar.topjava.util.UsersUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Component
 public class UserServlet extends HttpServlet {
 
     private static final Logger log = getLogger(UserServlet.class);
@@ -25,6 +26,7 @@ public class UserServlet extends HttpServlet {
     private static final String USER_FORM_JSP = "/userForm.jsp";
 
     private UserRepository userRepository;
+
 
     @Override
     public void init() throws ServletException {
@@ -55,8 +57,7 @@ public class UserServlet extends HttpServlet {
             case "all":
             default:
                 log.debug("redirect to users");
-                final List<User> all = userRepository.getAll();
-                final List<User> users = UsersUtil.sortByName(all);
+                final List<User> users = userRepository.getAll();
                 request.setAttribute("users", users);
                 request.getRequestDispatcher(USERS_JSP).forward(request, response);
                 break;
