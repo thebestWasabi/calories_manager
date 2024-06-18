@@ -22,7 +22,7 @@ public class InMemoryMealRepository implements MealRepository {
     private final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
 
     private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
-    private final AtomicInteger counter = new AtomicInteger(1);
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     {
         MealsUtil.meals.forEach(this::save);
@@ -65,10 +65,34 @@ public class InMemoryMealRepository implements MealRepository {
         return removed.get();
     }
 
+    public boolean delete(final int id, final int userId) {
+        log.info("delete {} for userId {}", id, userId);
+
+        AtomicBoolean removed = new AtomicBoolean(false);
+
+        repository.entrySet().removeIf(entry -> {
+            final Meal meal = entry.getValue();
+            if (meal.getId() == id && Objects.equals(meal.getUserId(), userId)) {
+                removed.set(true);
+                return true;
+            }
+            return false;
+        });
+
+        return removed.get();
+    }
+
     @Override
     public Meal get(final int id) {
         log.info("get {}", id);
         return repository.get(id);
+    }
+
+    public Meal get(final int id, final int userId) {
+        log.info("get {} for userId {}", id, userId);
+
+        final Meal meal = repository.get(id);
+        return meal != null && Objects.equals(meal.getUserId(), userId) ? meal : null;
     }
 
     @Override

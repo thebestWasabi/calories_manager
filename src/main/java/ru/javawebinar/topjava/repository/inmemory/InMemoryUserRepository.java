@@ -20,7 +20,7 @@ public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
     private final Map<Integer, User> repository = new ConcurrentHashMap<>();
-    private final AtomicInteger idCounter = new AtomicInteger(1);
+    private final AtomicInteger idCounter = new AtomicInteger(0);
 
     {
         UsersUtil.users.forEach(this::save);
@@ -31,7 +31,7 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("save {}", user);
 
         if (user.isNew()) {
-            user.setId(idCounter.getAndIncrement());
+            user.setId(idCounter.incrementAndGet());
             repository.put(user.getId(), user);
             return user;
         }

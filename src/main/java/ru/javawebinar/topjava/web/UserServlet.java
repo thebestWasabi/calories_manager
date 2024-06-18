@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
@@ -18,7 +17,7 @@ import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Component
+
 public class UserServlet extends HttpServlet {
 
     private static final Logger log = getLogger(UserServlet.class);
