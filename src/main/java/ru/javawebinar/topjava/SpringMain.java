@@ -9,7 +9,6 @@ import ru.javawebinar.topjava.web.user.AdminRestController;
 import java.util.Arrays;
 
 public class SpringMain {
-
     public static void main(String[] args) {
         // java 7 automatic resource management (ARM)
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
@@ -18,5 +17,4 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
         }
     }
-
 }

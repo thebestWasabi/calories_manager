@@ -11,14 +11,11 @@ import java.io.IOException;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServlet extends HttpServlet {
-
     private static final Logger log = getLogger(UserServlet.class);
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
-
-        log.debug("redirect to users");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("forward to users");
         request.getRequestDispatcher("/users.jsp").forward(request, response);
     }
 }

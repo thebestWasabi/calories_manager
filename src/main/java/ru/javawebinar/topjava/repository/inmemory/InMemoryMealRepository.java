@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealRepository implements MealRepository {
-
     private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
@@ -30,17 +29,17 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Meal get(final int id) {
+    public boolean delete(int id) {
+        return repository.remove(id) != null;
+    }
+
+    @Override
+    public Meal get(int id) {
         return repository.get(id);
     }
 
     @Override
     public Collection<Meal> getAll() {
         return repository.values();
-    }
-
-    @Override
-    public boolean delete(final int id) {
-        return repository.remove(id) != null;
     }
 }

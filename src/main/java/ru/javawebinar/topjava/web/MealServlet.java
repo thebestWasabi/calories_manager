@@ -17,66 +17,61 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
-
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    private static final String MEALS_JSP = "/meals.jsp";
-    private static final String MEAL_FORM = "/mealForm.jsp";
 
-    private MealRepository mealRepository;
+    private MealRepository repository;
 
     @Override
-    public void init() throws ServletException {
-        mealRepository = new InMemoryMealRepository();
+    public void init() {
+        repository = new InMemoryMealRepository();
     }
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        final String action = request.getParameter("action");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
+
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        repository.save(meal);
+        response.sendRedirect("meals");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
             case "delete":
-                final int id = getId(request);
-                log.info("Delete: {}", id);
-                mealRepository.delete(id);
+                int id = getId(request);
+                log.info("Delete id={}", id);
+                repository.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
-                final Meal meal = action.equals("create")
-                        ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000)
-                        : mealRepository.get(getId(request));
+                final Meal meal = "create".equals(action) ?
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        repository.get(getId(request));
                 request.setAttribute("meal", meal);
-                request.getRequestDispatcher(MEAL_FORM).forward(request, response);
+                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("mealsList", MealsUtil.getTos(mealRepository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
-                request.getRequestDispatcher(MEALS_JSP).forward(request, response);
+                request.setAttribute("meals",
+                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
     }
 
-    @Override
-    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding("UTF-8");
-
-        final String idStr = request.getParameter("id");
-        final Integer id = idStr.isEmpty() ? null : Integer.valueOf(idStr);
-        final LocalDateTime date = LocalDateTime.parse(request.getParameter("dateTime"));
-        final String description = request.getParameter("description");
-        final int calories = Integer.parseInt(request.getParameter("calories"));
-
-        final Meal meal = new Meal(id, date, description, calories);
-
-        log.info(meal.isNew() ? "Create new meal {}" : "Update meal {}", meal);
-
-        mealRepository.save(meal);
-        response.sendRedirect("meals");
-    }
-
-    private int getId(final HttpServletRequest request) {
-        final String idStr = Objects.requireNonNull(request.getParameter("id"));
-        return Integer.parseInt(idStr);
+    private int getId(HttpServletRequest request) {
+        String paramId = Objects.requireNonNull(request.getParameter("id"));
+        return Integer.parseInt(paramId);
     }
 }
