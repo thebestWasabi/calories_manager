@@ -37,8 +37,7 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        return em.createQuery("DELETE FROM Meal m WHERE m.id = :id " +
-                              "AND m.user.id = :userId")
+        return em.createNamedQuery(Meal.DELETE)
                        .setParameter("id", id)
                        .setParameter("userId", userId)
                        .executeUpdate() != 0;
@@ -47,8 +46,7 @@ public class JpaMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         try {
-            return em.createQuery("SELECT m FROM Meal m WHERE m.id = :id " +
-                                  "AND m.user.id = :userId", Meal.class)
+            return em.createNamedQuery(Meal.GET, Meal.class)
                     .setParameter("id", id)
                     .setParameter("userId", userId)
                     .getSingleResult();
@@ -60,18 +58,14 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return em.createQuery("SELECT m FROM Meal m WHERE m.user.id = :userId " +
-                              "ORDER BY m.dateTime DESC", Meal.class)
+        return em.createNamedQuery(Meal.GET_ALL, Meal.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return em.createQuery(
-                        "SELECT m FROM Meal m WHERE m.user.id = :userId " +
-                        "AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime " +
-                        "ORDER BY m.dateTime DESC", Meal.class)
+        return em.createNamedQuery(Meal.GET_BETWEEN_HALF_OPEN, Meal.class)
                 .setParameter("userId", userId)
                 .setParameter("startDateTime", startDateTime)
                 .setParameter("endDateTime", endDateTime)
