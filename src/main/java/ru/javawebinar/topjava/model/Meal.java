@@ -1,6 +1,14 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -9,13 +17,25 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id = :id AND m.user.id = :userId"),
-        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id = :id AND m.user.id = :userId"),
-        @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m WHERE m.user.id = :userId ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.GET_BETWEEN_HALF_OPEN, query = "SELECT m FROM Meal m WHERE m.user.id = :userId AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime ORDER BY m.dateTime DESC")
+        @NamedQuery(name = Meal.DELETE,
+                query = "DELETE FROM Meal m WHERE m.id = :id " +
+                        "AND m.user.id = :userId"),
+
+        @NamedQuery(name = Meal.GET,
+                query = "SELECT m FROM Meal m WHERE m.id = :id " +
+                        "AND m.user.id = :userId"),
+
+        @NamedQuery(name = Meal.GET_ALL,
+                query = "SELECT m FROM Meal m WHERE m.user.id = :userId " +
+                        "ORDER BY m.dateTime DESC"),
+
+        @NamedQuery(name = Meal.GET_BETWEEN_HALF_OPEN,
+                query = "SELECT m FROM Meal m WHERE m.user.id = :userId " +
+                        "AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime " +
+                        "ORDER BY m.dateTime DESC")
 })
 @Entity
-@Table(name = "meal")
+@Table(name = "meal", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meal_unique_user_datetime_idx"))
 public class Meal extends AbstractBaseEntity {
 
     public static final String DELETE = "Meal.delete";
@@ -33,7 +53,6 @@ public class Meal extends AbstractBaseEntity {
     private String description;
 
     @Column(name = "calories", nullable = false)
-    @NotNull
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)

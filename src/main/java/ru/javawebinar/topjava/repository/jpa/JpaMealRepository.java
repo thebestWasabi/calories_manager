@@ -7,10 +7,10 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = true)
@@ -28,8 +28,15 @@ public class JpaMealRepository implements MealRepository {
         if (meal.isNew()) {
             em.persist(meal);
             return meal;
-        }
-        else {
+        } else {
+            Meal existingMeal = em.createNamedQuery(Meal.GET, Meal.class)
+                    .setParameter("id", meal.getId())
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+
+            if (existingMeal == null) {
+                return null; // или throw new CustomException("Meal not found or not owned by user");
+            }
             return em.merge(meal);
         }
     }
@@ -37,23 +44,22 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        return em.createNamedQuery(Meal.DELETE)
-                       .setParameter("id", id)
-                       .setParameter("userId", userId)
-                       .executeUpdate() != 0;
+        int deletedCount = em.createNamedQuery(Meal.DELETE)
+                .setParameter("id", id)
+                .setParameter("userId", userId)
+                .executeUpdate();
+
+        return deletedCount != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        try {
-            return em.createNamedQuery(Meal.GET, Meal.class)
-                    .setParameter("id", id)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-        }
-        catch (NoResultException e) {
-            return null;
-        }
+        Optional<Meal> meal = Optional.ofNullable(em.createNamedQuery(Meal.GET, Meal.class)
+                .setParameter("id", id)
+                .setParameter("userId", userId)
+                .getSingleResult());
+
+        return meal.orElse(null); // или throw new CustomException("Meal not found or not owned by user");
     }
 
     @Override

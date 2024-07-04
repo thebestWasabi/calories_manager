@@ -28,9 +28,18 @@ import java.util.Set;
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 @NamedQueries({
-        @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
-        @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email"),
+        @NamedQuery(name = User.DELETE,
+                query = "DELETE FROM User u WHERE u.id=:id"),
+
+        @NamedQuery(name = User.BY_EMAIL,
+                query = "SELECT u FROM User u " +
+                        "LEFT JOIN FETCH u.roles " +
+                        "WHERE u.email=?1"),
+
+        @NamedQuery(name = User.ALL_SORTED,
+                query = "SELECT u FROM User u " +
+                        "LEFT JOIN FETCH u.roles " +
+                        "ORDER BY u.name, u.email"),
 })
 @Entity
 @Table(name = "users")
@@ -140,13 +149,7 @@ public class User extends AbstractNamedEntity {
 
     @Override
     public String toString() {
-        return "User{" +
-               "id=" + id +
-               ", email=" + email +
-               ", name=" + name +
-               ", enabled=" + enabled +
-               ", roles=" + roles +
-               ", caloriesPerDay=" + caloriesPerDay +
-               '}';
+        return String.format("User{id=%d, email=%s, name=%s, enabled=%s, roles=%s, caloriesPerDay=%d}",
+                id, email, name, enabled, roles, caloriesPerDay);
     }
 }
