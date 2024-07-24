@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
@@ -21,24 +25,27 @@ public class JdbcUserRepository implements UserRepository {
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
     private final JdbcTemplate jdbcTemplate;
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     private final SimpleJdbcInsert insertUser;
+    private final Validator validator;
 
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate,
+                              NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                              Validator validator) {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.validator = validator;
     }
 
     @Override
     @Transactional
     public User save(User user) {
+        validate(user);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
@@ -75,5 +82,12 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+    }
+
+    private void validate(User user) {
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
     }
 }

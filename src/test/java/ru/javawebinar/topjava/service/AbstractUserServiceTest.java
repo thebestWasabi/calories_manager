@@ -4,22 +4,33 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import ru.javawebinar.topjava.repository.JpaUtil;
 
 import static org.junit.Assert.assertThrows;
-import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_MATCHER;
+import static ru.javawebinar.topjava.UserTestData.admin;
+import static ru.javawebinar.topjava.UserTestData.getNew;
+import static ru.javawebinar.topjava.UserTestData.getUpdated;
+import static ru.javawebinar.topjava.UserTestData.guest;
+import static ru.javawebinar.topjava.UserTestData.user;
 
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
+
+    @Autowired
+    Environment environment;
 
     @Autowired
     protected UserService service;
@@ -27,13 +38,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired
+    @Autowired(required = false)
     protected JpaUtil jpaUtil;
 
     @Before
     public void setup() {
-        cacheManager.getCache("users").clear();
-        jpaUtil.clear2ndLevelHibernateCache();
+//        cacheManager.getCache("users").clear();
+        if (environment.acceptsProfiles("jpa", "datajpa") && jpaUtil != null) {
+            jpaUtil.clear2ndLevelHibernateCache();
+        }
     }
 
     @Test
