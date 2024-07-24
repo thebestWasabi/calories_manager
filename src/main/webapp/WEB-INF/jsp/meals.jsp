@@ -14,23 +14,23 @@
         <hr>
 
         <section>
-            <form method="get" action="meals">
+            <form method="get">
                 <input type="hidden" name="action" value="filter">
                 <dl>
-                    <dt><spring:message code="meals.filter.fromDate"/></dt>
-                    <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
+                    <dt><label for="startDate"><spring:message code="meals.filter.fromDate"/></label></dt>
+                    <dd><input id="startDate" type="date" name="startDate" value="${param.startDate}"></dd>
                 </dl>
                 <dl>
-                    <dt><spring:message code="meals.filter.toDate" /></dt>
-                    <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
+                    <dt><label for="endDate"><spring:message code="meals.filter.toDate" /></label></dt>
+                    <dd><input id="endDate" type="date" name="endDate" value="${param.endDate}"></dd>
                 </dl>
                 <dl>
-                    <dt><spring:message code="meals.filter.fromTime"/></dt>
-                    <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+                    <dt><label for="startTime"><spring:message code="meals.filter.fromTime"/></label></dt>
+                    <dd><input id="startTime" name="startTime" value="${param.startTime}"></dd>
                 </dl>
                 <dl>
-                    <dt><spring:message code="meals.filter.toTime"/></dt>
-                    <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
+                    <dt><label for="endTime"><spring:message code="meals.filter.toTime"/></label></dt>
+                    <dd><input id="endTime" type="time" name="endTime" value="${param.endTime}"></dd>
                 </dl>
                 <button type="submit"><spring:message code="meals.filter"/></button>
             </form>
